@@ -1,3 +1,6 @@
+-- Webserver that opens no files.
+-- At compile time, we embed the contents of "www/" into the binary.
+
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 import Blaze.ByteString.Builder
@@ -8,7 +11,6 @@ import Data.Map (fromList, (!), member)
 import Network.Wai
 import Network.Wai.Handler.Warp (runEnv)
 import Network.HTTP.Types
-import Network.HTTP.Types.Header
 
 m = let
   m0 = map (\(k, v) -> (('/':k), v)) $(embedDir "www")
@@ -16,6 +18,7 @@ m = let
     | (k, v) <- m0, "/index.html" `isSuffixOf` k]
   in fromList $ map (\(k, v) -> (pack k, v)) (m0 ++ m1)
 
+main :: IO ()
 main = runEnv 3000 $ \req f -> case requestMethod req of
   "GET" -> do
     putStrLn $ show (remoteHost req) ++ " " ++ show (rawPathInfo req)
