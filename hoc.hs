@@ -28,4 +28,5 @@ main = runEnv 3000 $ \req f -> case requestMethod req of
   where
   conTyp filename
     | isSuffixOf ".wasm" filename = ((hContentType, "application/wasm"):)
+    | isSuffixOf ".mjs" filename = ((hContentType, "application/javascript"):)
     | otherwise = id
