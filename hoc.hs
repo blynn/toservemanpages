@@ -11,9 +11,7 @@ import Network.Wai.Handler.Warp (runEnv)
 import Network.HTTP.Types
 
 toFilename :: String -> String
-toFilename s = case dropWhile ('/' ==) s of
-  "" -> "index.html"
-  f -> f
+toFilename s = dropWhile ('/' ==) $ if '/' == last s then s ++ "index.html" else s
 
 main :: IO ()
 main = runEnv 3000 $ \req f -> case requestMethod req of
@@ -27,6 +25,7 @@ main = runEnv 3000 $ \req f -> case requestMethod req of
   _ -> f $ responseBuilder status200 [] "OK"
   where
   conTyp filename
+    | isSuffixOf ".wasm.gz" filename = ((hContentEncoding, "gzip"):) . ((hContentType, "application/wasm"):)
     | isSuffixOf ".wasm" filename = ((hContentType, "application/wasm"):)
     | isSuffixOf ".mjs" filename = ((hContentType, "application/javascript"):)
     | otherwise = id

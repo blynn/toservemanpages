@@ -8,7 +8,7 @@ let
     blaze-builder
   ];
 
-  ghc = pkgs.haskell.packages.ghc901.ghcWithPackages haskellDeps;
+  ghc = pkgs.haskell.packages.ghc945.ghcWithPackages haskellDeps;
 
   nixPackages = [ ghc ];
 in
